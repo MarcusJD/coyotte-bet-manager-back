@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -23,12 +24,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		//Validar alternativa via datasource
 		clients.inMemory()
 		    .withClient("coyottebm")
-		    .secret("{noop}c0y077t3BM")
+		    .secret("$2a$10$lTlsxqeqsI0MwX/q8RwZJe5J5gYLQ9vUgpKiyU9fWz8OPwHbg5M3.")
 		    .scopes("read", "write")
 		    .authorizedGrantTypes("password", "refresh_token")
 		    .accessTokenValiditySeconds(20)
@@ -41,7 +45,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			.tokenStore(tokenStore())
 			.accessTokenConverter(accessTokenConverter())
 			.reuseRefreshTokens(false)
-			.authenticationManager(authenticationManager);
+			.userDetailsService(this.userDetailsService)
+			.authenticationManager(this.authenticationManager);
 	}
 	
 	@Bean
