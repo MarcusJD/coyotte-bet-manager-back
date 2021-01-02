@@ -11,5 +11,5 @@ import lombok.Setter;
 public class CoyotteBetManagerApiProperty {
 
 	private boolean habilitaHttps;
-	private String originPermitida = "http://localhost:4200";;
+	private String originPermitida;
 }
